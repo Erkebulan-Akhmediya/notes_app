@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/bloc/increment_bloc.dart';
+import 'package:notes_app/bloc/list_bloc.dart';
+import 'package:notes_app/model/note_model.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -12,13 +13,16 @@ class Home extends StatelessWidget {
         title: const Text('Home'),
       ),
       body: Center(
-        child: BlocBuilder<IncrementBloc, int>(
+        child: BlocBuilder<ListBloc, List<NoteModel>>(
           builder: (context, state) {
-            return Text(
-              '$state',
-              style: const TextStyle(
-                fontSize: 30,
-              ),
+            return ListView.builder(
+              itemCount: state.length,
+              itemBuilder: (context, index) {
+                final note = state[index];
+                return ListTile(
+                  title: Text(note.title),
+                );
+              },
             );
           },
         ),
