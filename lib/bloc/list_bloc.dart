@@ -4,53 +4,44 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/model/note_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AddNoteEvent {
+abstract class NoteEvent {}
+class AddNoteEvent extends NoteEvent {
   AddNoteEvent(this.note);
-
   final NoteModel note;
 }
+class ReadNoteEvent extends NoteEvent {}
 
-class ListBloc extends Bloc<AddNoteEvent, List<NoteModel>> {
+class ListBloc extends Bloc<NoteEvent, List<NoteModel>> {
+
+  List<NoteModel> stringListToNoteModelList(List<String> stringList) =>
+    List.from(
+      stringList.map(
+        (e) => NoteModel.fromMap(
+          json.decode(e),
+        ),
+      ),
+    );
+
+  Future<List<String>> getNotes() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('notes') ?? [];
+  }
+
   ListBloc() : super([]) {
 
-    Stream<List<NoteModel>> fetchNotes() async* {
-      final prefs = await SharedPreferences.getInstance();
-      final stringList = prefs.getStringList('notes') ?? [];
-
-      // converting a list of string into a list of note models
-      List<NoteModel> noteModelList = List.from(
-        stringList.map(
-          (e) {
-            final noteMap = json.decode(e);
-            final note = NoteModel.fromMap(noteMap);
-            return note;
-          },
-        ),
-      );
-
-      yield noteModelList;
-    }
-    fetchNotes();
+    on<ReadNoteEvent>((event, emit) async {
+      List<String> stringList = await getNotes();
+      emit(stringListToNoteModelList(stringList));
+    });
 
     on<AddNoteEvent>((event, emit) async {
-      // adding new note to local storage
+      final notes = await getNotes();
+      notes.add(json.encode(event.note.toMap()));
+
       final prefs = await SharedPreferences.getInstance();
-      final oldNotes = prefs.getStringList('notes') ?? [];
-      oldNotes.add(json.encode(event.note.toMap()));
-      prefs.setStringList('notes', oldNotes);
+      prefs.setStringList('notes', notes);
 
-      // converting a list of string into a list of note models
-      List<NoteModel> newNotes = List.from(
-        oldNotes.map(
-          (e) {
-            final noteMap = json.decode(e);
-            final note = NoteModel.fromMap(noteMap);
-            return note;
-          },
-        ),
-      );
-
-      emit(newNotes);
+      emit(stringListToNoteModelList(notes));
     });
   }
 }
