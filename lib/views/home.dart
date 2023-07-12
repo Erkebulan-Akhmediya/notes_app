@@ -12,7 +12,7 @@ class Home extends StatelessWidget {
     BlocProvider.of<ListBloc>(context).add(ReadNoteEvent());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('Notes'),
       ),
       body: Center(
         child: BlocBuilder<ListBloc, List<NoteModel>>(

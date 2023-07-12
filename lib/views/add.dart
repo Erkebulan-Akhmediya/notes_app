@@ -7,12 +7,13 @@ class Add extends StatelessWidget {
   Add({super.key});
 
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Increment'),
+        title: const Text('Add Note'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -21,24 +22,31 @@ class Add extends StatelessWidget {
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Title',
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                BlocProvider.of<ListBloc>(context).add(
-                  AddNoteEvent(
-                    NoteModel(
-                      title: _titleController.text,
-                    ),
-                  ),
-                );
-              },
-              child: const Text('Add Note'),
+            TextField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Text...',
+              ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          BlocProvider.of<ListBloc>(context).add(
+            AddNoteEvent(
+              NoteModel(
+                title: _titleController.text,
+                description: _descriptionController.text,
+              ),
+            ),
+          );
+        },
+        child: const Text('Add Note'),
       ),
     );
   }

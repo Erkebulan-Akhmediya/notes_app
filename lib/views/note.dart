@@ -14,7 +14,25 @@ class Note extends StatelessWidget {
       appBar: AppBar(
         title: BlocBuilder<ListBloc, List<NoteModel>>(
           builder: (context, state) {
-            return Text(state[index].title);
+            return Text(
+              state[index].title,
+              style: const TextStyle(
+                fontSize: 25,
+              ),
+            );
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: BlocBuilder<ListBloc, List<NoteModel>>(
+          builder: (context, state) {
+            return Text(
+              state[index].description,
+              style: const TextStyle(
+                fontSize: 20,
+              ),
+            );
           },
         ),
       ),
