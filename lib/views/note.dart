@@ -12,15 +12,69 @@ class Note extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    void changeNoteTitle(String title) {
+      BlocProvider.of<ListBloc>(context).add(
+        ChangeNoteEvent(
+          index,
+          NoteModel(
+            title: title,
+            description: _descriptionController.text,
+          ),
+        ),
+      );
+    }
+
+    void addNoteTitle(String title) {
+      BlocProvider.of<ListBloc>(context).add(
+        AddNoteEvent(
+          NoteModel(
+            title: title,
+            description: '',
+          ),
+        ),
+      );
+    }
+
+    void changeNoteDescription(String description) {
+      BlocProvider.of<ListBloc>(context).add(
+        ChangeNoteEvent(
+          index,
+          NoteModel(
+            title: _titleController.text,
+            description: description,
+          ),
+        ),
+      );
+    }
+
+    void addNoteDescription(String description) {
+      BlocProvider.of<ListBloc>(context).add(
+        AddNoteEvent(
+          NoteModel(
+            title: '',
+            description: description,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocBuilder<ListBloc, List<NoteModel>>(
           builder: (context, state) {
-            final note = state[index];
-            _titleController.text = note.title;
-            _descriptionController.text = note.description;
+
+            if (index == state.length) {
+              _titleController.text = '';
+              _descriptionController.text = '';
+            } else {
+              final note = state[index];
+              _titleController.text = note.title;
+              _descriptionController.text = note.description;
+            }
+
             return ListView(
               children: <Widget>[
                 TextField(
@@ -32,15 +86,11 @@ class Note extends StatelessWidget {
                     fontSize: 25,
                   ),
                   onChanged: (title) {
-                    BlocProvider.of<ListBloc>(context).add(
-                      ChangeNoteEvent(
-                        index,
-                        NoteModel(
-                          title: title,
-                          description: _descriptionController.text,
-                        ),
-                      ),
-                    );
+                    if (index == state.length) {
+                      return addNoteTitle(title);
+                    } else {
+                      return changeNoteTitle(title);
+                    }
                   },
                 ),
                 TextField(
@@ -51,15 +101,11 @@ class Note extends StatelessWidget {
                     border: InputBorder.none,
                   ),
                   onChanged: (description) {
-                    BlocProvider.of<ListBloc>(context).add(
-                      ChangeNoteEvent(
-                        index,
-                        NoteModel(
-                          title: _titleController.text,
-                          description: description,
-                        ),
-                      ),
-                    );
+                    if (index == state.length) {
+                      return addNoteDescription(description);
+                    } else {
+                      return changeNoteDescription(description);
+                    }
                   },
                 ),
               ],

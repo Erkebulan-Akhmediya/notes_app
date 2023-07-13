@@ -36,11 +36,19 @@ class Home extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add');
+      floatingActionButton: BlocBuilder<ListBloc, List<NoteModel>>(
+        builder: (context, state) {
+          return ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Note(index: state.length),
+                ),
+              );
+            },
+            child: const Icon(Icons.add),
+          );
         },
-        child: const Icon(Icons.add),
       ),
     );
   }
