@@ -81,8 +81,6 @@ class Note extends StatelessWidget {
               _descriptionController.text = '';
             } else {
               final note = state[index];
-              // _titleController.text = note.title;
-              // _descriptionController.text = note.description;
               _titleController.value = TextEditingValue(
                 text: note.title,
                 selection: TextSelection.collapsed(offset: note.title.length),

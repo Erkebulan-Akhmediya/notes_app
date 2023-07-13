@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/bloc/list_bloc.dart';
 import 'package:notes_app/model/note_model.dart';
 import 'package:notes_app/views/note.dart';
+import 'package:notes_app/views/note_item.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -18,19 +19,10 @@ class Home extends StatelessWidget {
         child: BlocBuilder<ListBloc, List<NoteModel>>(
           builder: (context, state) {
             return ListView.builder(
+              padding: const EdgeInsets.all(20.0),
               itemCount: state.length,
               itemBuilder: (context, index) {
-                final note = state[index];
-                return TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Note(index: index),
-                      ),
-                    );
-                  },
-                  child: Text(note.title),
-                );
+                return NoteItem(index: index);
               },
             );
           },
