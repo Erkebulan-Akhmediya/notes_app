@@ -15,6 +15,10 @@ class ChangeNoteEvent extends NoteEvent {
   final NoteModel note;
   ChangeNoteEvent(this.index, this.note);
 }
+class DeleteNoteEvent extends NoteEvent {
+  final int index;
+  DeleteNoteEvent(this.index);
+}
 
 class ListBloc extends Bloc<NoteEvent, List<NoteModel>> {
 
@@ -32,6 +36,11 @@ class ListBloc extends Bloc<NoteEvent, List<NoteModel>> {
     return prefs.getStringList('notes') ?? [];
   }
 
+  void saveNotes(List<String> notes) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('notes', notes);
+  }
+
   ListBloc() : super([]) {
 
     on<ReadNoteEvent>((event, emit) async {
@@ -43,8 +52,9 @@ class ListBloc extends Bloc<NoteEvent, List<NoteModel>> {
       final notes = await getNotes();
       notes.add(json.encode(event.note.toMap()));
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setStringList('notes', notes);
+      // final prefs = await SharedPreferences.getInstance();
+      // prefs.setStringList('notes', notes);
+      saveNotes(notes);
 
       emit(stringListToNoteModelList(notes));
     });
@@ -53,8 +63,20 @@ class ListBloc extends Bloc<NoteEvent, List<NoteModel>> {
       List<String> notes = await getNotes();
       notes[event.index] = json.encode(event.note.toMap());
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setStringList('notes', notes);
+      // final prefs = await SharedPreferences.getInstance();
+      // prefs.setStringList('notes', notes);
+      saveNotes(notes);
+
+      emit(stringListToNoteModelList(notes));
+    });
+
+    on<DeleteNoteEvent>((event, emit) async {
+      List<String> notes = await getNotes();
+      notes.removeAt(event.index);
+
+      // final prefs = await SharedPreferences.getInstance();
+      // prefs.setStringList('notes', notes);
+      saveNotes(notes);
 
       emit(stringListToNoteModelList(notes));
     });

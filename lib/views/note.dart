@@ -60,7 +60,17 @@ class Note extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              BlocProvider.of<ListBloc>(context).add(DeleteNoteEvent(index));
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocBuilder<ListBloc, List<NoteModel>>(
@@ -71,8 +81,16 @@ class Note extends StatelessWidget {
               _descriptionController.text = '';
             } else {
               final note = state[index];
-              _titleController.text = note.title;
-              _descriptionController.text = note.description;
+              // _titleController.text = note.title;
+              // _descriptionController.text = note.description;
+              _titleController.value = TextEditingValue(
+                text: note.title,
+                selection: TextSelection.collapsed(offset: note.title.length),
+              );
+              _descriptionController.value = TextEditingValue(
+                text: note.description,
+                selection: TextSelection.collapsed(offset: note.description.length),
+              );
             }
 
             return ListView(
@@ -81,6 +99,7 @@ class Note extends StatelessWidget {
                   controller: _titleController,
                   decoration: const InputDecoration(
                     hintText: 'Title',
+                    border: InputBorder.none,
                   ),
                   style: const TextStyle(
                     fontSize: 25,
