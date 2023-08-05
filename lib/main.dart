@@ -14,9 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ListBloc(),
-      child: const MaterialApp(
+      child: MaterialApp(
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: const Home(),
       ),
     );
   }

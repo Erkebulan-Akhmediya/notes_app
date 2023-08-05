@@ -13,7 +13,10 @@ class Home extends StatelessWidget {
     BlocProvider.of<ListBloc>(context).add(ReadNoteEvent());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes'),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 40.0, bottom: 10.0),
+          child: Text('Notes'),
+        ),
       ),
       body: Center(
         child: BlocBuilder<ListBloc, List<NoteModel>>(
@@ -31,6 +34,9 @@ class Home extends StatelessWidget {
       floatingActionButton: BlocBuilder<ListBloc, List<NoteModel>>(
         builder: (context, state) {
           return ElevatedButton(
+            style: const ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(Colors.grey),
+            ),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -38,7 +44,10 @@ class Home extends StatelessWidget {
                 ),
               );
             },
-            child: const Icon(Icons.add),
+            child: const Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
           );
         },
       ),

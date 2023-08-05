@@ -35,15 +35,21 @@ class NoteItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      note.title,
-                      style: const TextStyle(
-                        fontSize: 25,
+                    Flexible(
+                      child: Text(
+                        note.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 25,
+                        ),
                       ),
                     ),
-                    Text(
-                      note.description.split('\n')[0],
-                      maxLines: 1,
+                    Flexible(
+                      child: Text(
+                        note.description.split('\n')[0],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                   ],
                 ),
